@@ -17,7 +17,7 @@ import os
 from langchain.callbacks import get_openai_callback
 from langchain.chains.question_answering import load_qa_chain
 
-os.environ["OPENAI_API_KEY"] = "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"
+# os.environ["OPENAI_API_KEY"] = "sk-"
 
 
 def ask_vector():
