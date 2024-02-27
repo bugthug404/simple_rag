@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from qdrant_client import models, QdrantClient
+from qdrant_client import QdrantClient
 from sentence_transformers import SentenceTransformer
 from langchain_community.llms import Ollama
 from langchain.vectorstores import Qdrant
@@ -13,8 +13,7 @@ from langchain import VectorDBQA
 from io import BytesIO
 from PyPDF2 import PdfReader
 import tempfile
-import base64 
-# import ollama
+import base64
 
 encoder = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -25,8 +24,6 @@ def add_book():
         pdf_data_encoded = row_pdf.split(",")[1]
         pdf_data = base64.b64decode(pdf_data_encoded)
   
-        print("got upload request ==", pdf_data,request)
-
         # Create a temporary file with the binary data
         with tempfile.NamedTemporaryFile(delete=False) as tmp_file:
             tmp_file.write(pdf_data)
@@ -52,7 +49,6 @@ def add_book():
 
         return jsonify({"status":"data uploaded successfully"}), 200
     except Exception as error:
-        print("addbook error === ", error)
         return jsonify(error=str(error)), 500
       
 
@@ -61,7 +57,6 @@ def ask_book():
         
         query = request.args.get('query') 
         model = request.args.get('model',"gemma:2b") 
-        print(query)
         
         if not query:
              return jsonify("Please provide a query parameter"), 400
@@ -87,7 +82,9 @@ def ask_book():
 
         return jsonify(response), 200
     except Exception as error:
-        print("searchBooks error === ", error)
-        return jsonify(error=str(error)), 500
+        error_text = str(error)
+        if "Not found: Collection" in error_text:
+            return jsonify(error="Collection not found!"), 400
+        return jsonify(error=str(data)), 500
     
 

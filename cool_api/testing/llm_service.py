@@ -27,7 +27,6 @@ def ask_vector():
         encoder = SentenceTransformer('all-MiniLM-L6-v2')
         query_embedding = encoder.encode(search_query)
    
-        print("query_embedding === ", query_embedding.shape)
         
         client = QdrantClient("localhost", port=6333);
 
@@ -36,7 +35,6 @@ def ask_vector():
             query_vector=encoder.encode(search_query).tolist(),
             limit=10,
         )
-        print("docs === ", len(docs), docs[0])
         payloads = [result.payload for result in docs]
         
         return jsonify(payloads), 200
@@ -44,18 +42,14 @@ def ask_vector():
         # llm = OpenAI()
         llm = Ollama(model="llama2")
         # result = llm.invoke("The first man on the moon was ...")
-        # print(result)
         chain = load_qa_chain(llm, chain_type="stuff")
         input_documents = [encoder.encode(search_query).tolist() for doc in docs]
         with get_openai_callback() as cb:
           response = chain.invoke(input_documents=payloads[0], question=search_query,input={"question": search_query, "input_documents": payloads[0]})
-          print("cb == ",cb)
         
-        print("got something === ", chain.run("hello"))
 
         return jsonify(response), 200
     except Exception as error:
-        print("query error === ", error)
         return jsonify(error=str(error)), 500
 
 def query1():
@@ -71,9 +65,7 @@ def query1():
         # chain = load_qa_chain(llm, chain_type="stuff")
         # with get_openai_callback() as cb:
         #   response = chain.run(input_documents=texts, question=user_question)
-        #   print(cb)
         
-        # print("texts === ", texts[0])
 
         # Load the embedding model 
         # model_name = "BAAI/bge-large-en"
@@ -85,7 +77,6 @@ def query1():
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs,
         )
-        print("embeddings === ", embeddings)
 
         url = "http://localhost:6333"
         qdrant = Qdrant.from_documents(
@@ -97,11 +88,8 @@ def query1():
             force_recreate=True,
         )
         
-        print("Vector DB Successfully Created!",qdrant)
-
         return jsonify({"success":True}), 200
     except Exception as error:
-        print("query error === ", error)
         return jsonify(error=str(error)), 500
    
    
@@ -120,14 +108,12 @@ def query():
         client = QdrantClient("localhost", port=6333)
         vector_store = QdrantVectorStore(client=client, collection_name="my_books")
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        print("storage_context === ", storage_context)
 
         # Initialize Ollama and ServiceContext
         service_context = ServiceContext.from_defaults(llm=llm, embed_model="local")
 
         # Create VectorStoreIndex and query engine
         index = VectorStoreIndex.from_documents(documents, service_context=service_context, storage_context=storage_context)
-        print("index === ", index)
         query_engine = index.as_query_engine()
 
         # Get the query from the request data
@@ -137,7 +123,6 @@ def query():
         response = query_engine.query(query_text)
         return jsonify(response), 200
     except Exception as error:
-        print("query error === ", error)
         return jsonify(error=str(error)), 500
    
    
@@ -147,10 +132,7 @@ def askllm():
     try:
         # get request query
         query = request.args.get("query")
-        print("query == ", query)
         result = llm.invoke("The first man on the moon was ...");
-        print("result === ", result)
         return jsonify(data=result), 200
     except Exception as error:
-        print("allBooks error === ", error)
         return jsonify(error=str(error)), 500

@@ -23,7 +23,7 @@ function App() {
       const result = await toast.promise(
         response,
         {
-          loading: "Baking your pdf 🪄✨",
+          loading: "Processing your pdf 📇 ",
           success: `Your PDF ready to serve 🎉🎊🥳`,
           error: (err) => `This just happened: ${err.toString()}`,
         },
@@ -37,7 +37,6 @@ function App() {
           },
         }
       );
-      console.log("data uploaded === ", response, result);
     } catch (error) {
       console.log(error);
     }
@@ -67,7 +66,9 @@ function App() {
       };
 
       setQnaList([item, ...qnaList]);
-      toast.error(error.message ?? "Something went wrong");
+      toast.error(
+        error?.response?.data?.error ?? error.message ?? "Something went wrong"
+      );
     }
   }
 
@@ -98,7 +99,7 @@ function App() {
       </div>
       <div className="p-4 bg-gray-100 rounded-3xl max-w-2xl w-full  gap-2">
         <div className="pb-2">
-          <label htmlFor="selectllm">Select a llm : </label>
+          <label htmlFor="selectllm">Select your model : </label>
           <select
             name="selectllm"
             id=""
@@ -128,8 +129,8 @@ function App() {
         {qnaList.length ? (
           <Qna list={qnaList} />
         ) : (
-          <div className="p-4 bg-white mt-4 rounded-lg h-52">
-            Ask your question
+          <div className="p-4 bg-white mt-4 rounded-lg h-52 text-center pt-24">
+            Ask your first question
           </div>
         )}
       </div>
