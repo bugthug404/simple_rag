@@ -17,7 +17,7 @@ export async function addPointsToCollection(
       headers: {
         "content-type": "application/json",
       },
-      data: payload,
+      data: { points: payload },
       // create with sample data
       // data: samplePointsData,
     };
@@ -25,17 +25,23 @@ export async function addPointsToCollection(
     const result = await axios.request(config);
 
     console.log(result.data);
+    return result.data;
   } catch (error: any) {
     console.log(error?.response?.data ?? error.message ?? "error");
+    throw error?.message || "Error getting a list of collections in Qdrant";
   }
 }
 
-export async function createCollection(collectionName: string, options?: any) {
+export async function createCollection(
+  collectionName: string,
+  options?: any,
+  size?: number
+) {
   try {
     let data = options || {
       vectors: {
-        size: 4,
-        distance: "Dot",
+        size: 768,
+        distance: "Cosine",
       },
     };
 

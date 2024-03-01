@@ -13,45 +13,45 @@ import { splitWithOverlap } from "./utils/text-splitter";
 import { getEmbeddings } from "./utils/get-embeddings";
 import { QdrantClient } from "@qdrant/js-client-rest";
 import { addPointsToCollection } from "./utils/put-collection";
+import { PointVetorType } from "./utils/types";
+import { extractFullText } from "./utils/text-extract";
 
 export async function addBook(req: Request, res: Response) {
   try {
     // Get PDF data from body
-    // const { data: dataUri } = req.body as any;
-    // const base64Data = dataUri.split(",")[1];
-    // console.log("base64Data === ", base64Data);
-    // const pdfData = Buffer.from(base64Data, "base64");
+    const { data: dataUri } = req.body as any;
+    const base64Data = dataUri.split(",")[1];
+    const pdfData = Buffer.from(base64Data, "base64");
 
-    // console.log("pdfdata ==== ", pdfData);
+    const tempFilePath = "temp.pdf";
 
-    // const tempFilePath = "temp.pdf";
+    await fs.promises.writeFile(tempFilePath, pdfData);
 
-    // await fs.promises.writeFile(tempFilePath, pdfData);
-
-    // const pdfExtract = new PDFExtract();
-    // const textData = await pdfExtract.extract(tempFilePath);
+    const pdfExtract = new PDFExtract();
+    const textData = await pdfExtract.extract(tempFilePath);
     // const fullText = textData.pages
     //   .map((v) => v.content.map((e) => e.str).join(" "))
     //   .join(" ");
+    const fullText = extractFullText(textData, 5);
 
-    // const texts = splitWithOverlap(fullText, 1000, 100);
+    const texts = splitWithOverlap(fullText, 1000, 100);
 
-    // const client = new QdrantClient({ url: "http://127.0.0.1:6333" });
+    let embeddings: PointVetorType[] = [];
 
-    // client.recreateCollection("node_rag", {});
+    for (let i = 0; i < texts.length; i++) {
+      const text = texts[i];
+      const embed = await getEmbeddings(text);
 
-    let embeddings: string[] = [];
+      embeddings.push({
+        id: i,
+        vector: embed.embedding,
+        payload: { chunk: text },
+      });
+    }
 
-    // for (let text in texts) {
-    //   const embed = await getEmbeddings(text);
-    //   embeddings.push(embed);
-    // }
+    const data = await addPointsToCollection("my_book", embeddings);
 
-    // console.log("embedding === ", embeddings);
-
-    const data = await addPointsToCollection("ayye");
-
-    // console.log("==== ", data);
+    console.log("addPointsToCollection result === ", data);
 
     res.json({ status: "data uploaded successfully" }).status(200);
   } catch (error: any) {

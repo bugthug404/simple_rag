@@ -14,5 +14,5 @@ export async function getEmbeddings(prompt: string) {
     }
   );
 
-  return response.data;
+  return response.data as { embedding: number[] };
 }
