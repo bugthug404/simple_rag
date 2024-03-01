@@ -4,6 +4,7 @@ import Button from "./button";
 import { calling, llmList } from "./utils";
 import toast from "react-hot-toast";
 import Qna from "./qna";
+import { addData, createCol, getCollectionInfo } from "./atest";
 
 export interface QNAProps {
   question: string;
@@ -19,7 +20,7 @@ function App() {
 
   async function handleUploadPdf(data: BinaryData) {
     try {
-      const response = calling("rag/add-book", "POST", data);
+      const response = calling("rag/add-book", "POST", { data });
       const result = await toast.promise(
         response,
         {
@@ -37,6 +38,7 @@ function App() {
           },
         }
       );
+      console.log("result === ", result);
     } catch (error) {
       console.log(error);
     }
@@ -95,6 +97,29 @@ function App() {
           >
             Upload
           </Button>
+          <div>
+            <Button
+              onClick={() => {
+                addData();
+              }}
+            >
+              add
+            </Button>
+            <Button
+              onClick={() => {
+                createCol();
+              }}
+            >
+              create
+            </Button>
+            <Button
+              onClick={() => {
+                getCollectionInfo("");
+              }}
+            >
+              get col
+            </Button>
+          </div>
         </div>
       </div>
       <div className="p-4 bg-gray-100 rounded-3xl max-w-2xl w-full  gap-2">

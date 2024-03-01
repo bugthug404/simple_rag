@@ -20,7 +20,9 @@ encoder = SentenceTransformer("all-MiniLM-L6-v2")
 def add_book():
     try:
         # get pdf data from body
-        row_pdf = request.json
+        print("add book request recieved")
+        row = request.json
+        row_pdf = row['data']
         pdf_data_encoded = row_pdf.split(",")[1]
         pdf_data = base64.b64decode(pdf_data_encoded)
   
@@ -32,11 +34,17 @@ def add_book():
         loader = PyPDFLoader(tmp_file_path)
         # reader = PdfReader(pdf_data)
         documents = loader.load()
+        
+        print("documents === ",documents)
+        
         client = QdrantClient("localhost", port=6333);
 
        # Split the documents into chunks
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=10)
         texts = text_splitter.split_documents(documents)
+        
+        print("texts  === ",texts)
+        return "everything's ok here", 200
 
 
         embeddings = HuggingFaceBgeEmbeddings(
