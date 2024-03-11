@@ -17,7 +17,7 @@ app.use(
 );
 // add json middleware
 app.use(express.json({ limit: "20mb" }));
-connectToMongoDB();
+// connectToMongoDB();
 
 app.get("/", (req, res) =>
   res.status(200).send({
