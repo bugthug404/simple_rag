@@ -83,11 +83,11 @@ function App() {
             onClick={() => {
               if (file?.[0]) {
                 const reader = new FileReader();
-                reader.readAsDataURL(file?.[0] as any);
+                reader.readAsDataURL(file?.[0]);
 
                 reader.onload = (event) => {
                   const fileData = event.target?.result;
-                  handleUploadPdf(fileData as any);
+                  handleUploadPdf(fileData as BinaryData);
                 };
               } else {
                 console.log("no file");
@@ -97,29 +97,6 @@ function App() {
           >
             Upload
           </Button>
-          <div>
-            <Button
-              onClick={() => {
-                addData();
-              }}
-            >
-              add
-            </Button>
-            <Button
-              onClick={() => {
-                createCol();
-              }}
-            >
-              create
-            </Button>
-            <Button
-              onClick={() => {
-                getCollectionInfo("");
-              }}
-            >
-              get col
-            </Button>
-          </div>
         </div>
       </div>
       <div className="p-4 bg-gray-100 rounded-3xl max-w-2xl w-full  gap-2">

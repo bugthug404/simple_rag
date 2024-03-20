@@ -69,14 +69,22 @@ export async function askBook(req: Request, res: Response) {
     return;
   }
 
-  const embed = await getEmbeddings(query as string);
+  const embed: {
+    embedding: number[];
+  } = await getEmbeddings(query as string);
 
-  console.log(embed);
+  console.log(embed.embedding);
 
   const client = new QdrantClient({
     url: "http://localhost",
     port: 6333,
   });
 
-  console.log(client);
+  const answer = await client.search("my_book", {
+    vector: embed.embedding,
+    limit: 10,
+  });
+
+  console.log(answer);
+  //  TODO: provide these results to llm to organise & generate response for the user
 }

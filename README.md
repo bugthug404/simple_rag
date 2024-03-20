@@ -4,9 +4,23 @@ Working demo - [Watch video](https://youtu.be/hb-dm6MIW6M)
 
 clone this repository to work in local
 
-**Backend Setup**
+**Requirements to run this on local machine**
 
-download & install ollama from https://ollama.com
+- [Python](https://www.python.org/downloads/) - for backend
+- [Ollama](https://ollama.com/) - to use LLM on Local
+- [Docker](https://www.docker.com/products/docker-desktop/) - to run Qdrant storage
+- [Nodejs](https://nodejs.org/en/download) - for frontend & backend
+- [Qdrant Docker Image](https://qdrant.tech/documentation/quick-start/)
+
+Run this command to run docker image
+
+```
+docker run -p 6333:6333 -p 6334:6334 \
+    -v $(pwd)/qdrant_storage:/qdrant/storage:z \
+    qdrant/qdrant
+```
+
+**Backend Setup**
 
 pull llm from ollama
 
