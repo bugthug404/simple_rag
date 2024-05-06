@@ -3,10 +3,11 @@ import Cors from "cors";
 import mongoose from "mongoose";
 import * as dotenv from "dotenv";
 import { connectToMongoDB } from "./utils/db";
-import bookRouter from "./controllers/book.controller";
+import documentRouter from "./controllers/document/document.controller";
+import websiteRouter from "./controllers/website/website.controller";
 
 dotenv.config();
-mongoose.set("strictQuery", false);
+// mongoose.set("strictQuery", false);
 const app = express();
 const port = process.env.PORT || 3009;
 app.use(
@@ -25,8 +26,9 @@ app.get("/", (req, res) =>
   })
 );
 
-app.use("/rag", bookRouter);
+app.use("/rag", documentRouter);
+app.use("/web", websiteRouter);
 
-app.listen(port, () => {
+app.listen(3009, () => {
   console.log(`server started on port ${port}`);
 });

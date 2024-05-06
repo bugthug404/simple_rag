@@ -6,7 +6,7 @@
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
     "skipLibCheck": true /* Skip type checking all .d.ts files. */
   }
 }

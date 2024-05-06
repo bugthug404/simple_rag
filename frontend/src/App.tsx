@@ -45,32 +45,38 @@ function App() {
   }
 
   async function handleAsk() {
-    const question = inputRef.current?.value;
-    if (!question) return toast("Please enter your question!");
-    let item: QNAProps = { question: question, llm: model };
     try {
-      inputRef.current.value = "";
-      setQnaList([item, ...qnaList]);
-      if (!question) return;
-      const response = await calling(
-        `rag/ask-book?query=${question}&model=${model}`
-      );
-      item = {
-        ...item,
-        answer: response,
-      };
+      const question = inputRef.current?.value;
+      if (!question) return toast("Please enter your question!");
+      let item: QNAProps = { question: question, llm: model };
+      try {
+        inputRef.current.value = "";
+        setQnaList([item, ...qnaList]);
+        if (!question) return;
+        const response = await calling(
+          `rag/ask-book?query=${question}&model=${model}`
+        );
+        item = {
+          ...item,
+          answer: response ?? "something went wrong",
+        };
 
-      setQnaList([item, ...qnaList]);
+        setQnaList([item, ...qnaList]);
+      } catch (error: any) {
+        item = {
+          ...item,
+          answer: "Something went wrong",
+        };
+
+        setQnaList([item, ...qnaList]);
+        toast.error(
+          error?.response?.data?.error ??
+            error.message ??
+            "Something went wrong"
+        );
+      }
     } catch (error: any) {
-      item = {
-        ...item,
-        answer: "Something went wrong",
-      };
-
-      setQnaList([item, ...qnaList]);
-      toast.error(
-        error?.response?.data?.error ?? error.message ?? "Something went wrong"
-      );
+      console.log(error.message ?? "got error");
     }
   }
 

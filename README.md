@@ -25,11 +25,15 @@ docker run -p 6333:6333 -p 6334:6334 \
 pull llm from ollama
 
     ollama pull gemma:2b
-    ollama pull llama2
+    ollama pull nomic-embed-text
 
 run ollama
 
     ollama serve
+
+**PYTHON BACKEND**
+
+>**Note:-** website module is in development
 
 Install dependencies
 
@@ -39,7 +43,19 @@ run backend
 
     python cool_api
 
-backend should be running on http://localhost:3009
+**NODEJS BACKEND**
+
+Install dependencies
+
+    pnpm install
+
+run backend
+
+    pnpm dev
+
+
+
+backend should be running on http://localhost:3009.
 open http://localhost:3009 in browser & you should get this result
 
     {
@@ -48,7 +64,7 @@ open http://localhost:3009 in browser & you should get this result
 
 now your backend is ready!
 
-**_Package version used_**
+**_Package version used in python_**
 
 1. PyPDF2 - v3.0.1
 2. qdrant-client - v1.7.3
@@ -60,6 +76,8 @@ now your backend is ready!
 **Frontend Setup**
 
 install dependencies & run the app
+
+>website module not ready for frontend
 
     cd frontend
     pnpm install
