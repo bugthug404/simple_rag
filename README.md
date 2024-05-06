@@ -4,6 +4,8 @@ Working demo - [Watch video](https://youtu.be/hb-dm6MIW6M)
 
 clone this repository to work in local
 
+_bug report? feel free to create an issue_
+
 **Requirements to run this on local machine**
 
 - [Python](https://www.python.org/downloads/) - for backend
