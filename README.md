@@ -27,6 +27,7 @@ docker run -p 6333:6333 -p 6334:6334 \
 pull llm from ollama
 
     ollama pull gemma:2b
+    ollama pull llama2 // optional
     ollama pull nomic-embed-text
 
 run ollama

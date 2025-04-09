@@ -4,3 +4,4 @@ node_modules
 .env.local
 dist
 temp.pdf
+storage
