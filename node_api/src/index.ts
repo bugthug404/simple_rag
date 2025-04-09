@@ -1,8 +1,6 @@
 import express from "express";
 import Cors from "cors";
-import mongoose from "mongoose";
-import * as dotenv from "dotenv";
-import { connectToMongoDB } from "./utils/db";
+import dotenv from "dotenv";
 import documentRouter from "./controllers/document/document.controller";
 import websiteRouter from "./controllers/website/website.controller";
 
@@ -26,7 +24,7 @@ app.get("/", (req, res) =>
   })
 );
 
-app.use("/rag", documentRouter);
+app.use("/doc", documentRouter);
 app.use("/web", websiteRouter);
 
 app.listen(3009, () => {
