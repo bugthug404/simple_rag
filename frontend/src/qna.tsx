@@ -1,6 +1,6 @@
 import React from "react";
-import { QNAProps } from "./App";
 import Skeleton from "./skeleton";
+import { QNAProps } from "./pages/App";
 
 export default function Qna({ list }: { list: QNAProps[] }) {
   return (

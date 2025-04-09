@@ -10,8 +10,7 @@ import { pull } from "langchain/hub";
 import { extractWebsiteUrl } from "./utils/extract-website-urls";
 import { PlaywrightCrawler } from "crawlee";
 
-
-export async function getWebsiteUrls(req: Request,res: Response){
+export async function getWebsiteUrls(req: Request, res: Response) {
   try {
     const webUrl = req.body.url;
 
@@ -25,36 +24,44 @@ export async function getWebsiteUrls(req: Request,res: Response){
     const crawler = new PlaywrightCrawler({
       async requestHandler({ request, enqueueLinks }) {
         if (request.loadedUrl.endsWith(".webp")) return;
-        console.log(request.loadedUrl)
-        urls.push( request.loadedUrl );
-  
+        console.log(request.loadedUrl);
+        urls.push(request.loadedUrl);
+
         await enqueueLinks({});
       },
       maxConcurrency: 10,
     });
-  
-    await crawler.run([webUrl]);
-  
-    // return urls;
-    console.log(urls,urls.length)
-    
-    return res.send({urls}).status(200);
 
+    await crawler.run([webUrl]);
+
+    // return urls;
+    console.log(urls, urls.length);
+
+    return res.send({ urls }).status(200);
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res
-       .status(500)
-       .json({ error: error.message?? "Internal server error" });
+      .status(500)
+      .json({ error: error.message ?? "Internal server error" });
   }
 }
 
 export async function addWebsite(req: Request, res: Response) {
   try {
     const webUrl = req.body.url;
+
     if (!webUrl) {
       return res.status(400).json({
         message: "url is required",
       });
+    }
+
+    let domain: string;
+
+    try {
+      domain = new URL(webUrl).hostname;
+    } catch (error) {
+      domain = new URL("http://" + webUrl).hostname;
     }
 
     const urlRegex =
@@ -63,7 +70,7 @@ export async function addWebsite(req: Request, res: Response) {
       return res.status(400).json({ message: "invalid url format" });
     }
 
-    const domain = new URL(webUrl).hostname;
+    // const domain = new URL(webUrl).hostname;
 
     const client = new QdrantClient({
       url: "http://localhost:6333",
@@ -82,19 +89,26 @@ export async function addWebsite(req: Request, res: Response) {
 
     await extractWebsiteUrl(webUrl, domain);
 
-    res.json({ status: "data uploaded successfully" }).status(200);
+    return res.json({ status: "data uploaded successfully" }).status(200);
   } catch (error: any) {
     console.error(error);
-    return res
-      .json({ error: error.message ?? "Internal server error" })
-      .status(500);
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 
 export async function askWebsite(req: Request, res: Response) {
   try {
     const { query, model = "gemma:2b" } = req.query;
-    const collectionName = req.body?.domain;
+    const domain = req.body?.domain;
+
+    let collectionName: string;
+
+    try {
+      collectionName = new URL(domain).hostname;
+    } catch (error) {
+      collectionName = new URL("http://" + domain).hostname;
+    }
+
     console.log("---", query, model, collectionName);
 
     if (!query || !model || !collectionName) {
@@ -118,7 +132,7 @@ export async function askWebsite(req: Request, res: Response) {
     );
 
     const retriever = vectorStore.asRetriever(5);
-  
+
     const llm = new Ollama({
       baseUrl: "http://localhost:11434",
       model: "llama2",
@@ -146,5 +160,3 @@ export async function askWebsite(req: Request, res: Response) {
       .json({ error: error.message ?? "Internal server error" });
   }
 }
-
-

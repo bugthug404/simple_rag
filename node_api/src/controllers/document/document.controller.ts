@@ -3,7 +3,7 @@ import { askDocument, addDocument } from "./document.service";
 
 const documentRouter = Router();
 
-documentRouter.post("/add-Document", addDocument);
-documentRouter.get("/ask-Document", askDocument);
+documentRouter.post("/add", addDocument);
+documentRouter.get("/ask", askDocument);
 
 export default documentRouter;
